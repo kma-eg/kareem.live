@@ -358,7 +358,7 @@ def callback_query(call):
         markup.add(types.InlineKeyboardButton("❌ إغلاق", callback_data="cancel"))
         
         # إرسال رسالة جديدة
-        bot.send_message(call.message.chat.id, "👮‍♂️ **لوحة التحكم الرئيسية**\nاختر قسماً:", reply_markup=markup)
+        bot.send_message(call.message.chat.id, "👮‍♂️ لوحة التحكم الرئيسية\n اختر قسماً:", reply_markup=markup)
         return
 
     if data == "admin_stats":
