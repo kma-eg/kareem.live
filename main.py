@@ -132,21 +132,39 @@ def is_safe_content(text):
 def save_and_notify_admin(message):
     user_id = str(message.from_user.id)
     first_name = message.from_user.first_name
-    username = message.from_user.username or "No User"
+    username = f"@{message.from_user.username}" if message.from_user.username else "لا يوجد"
     
+    # التأكد من وجود الملف
     if not os.path.exists(users_file):
         with open(users_file, "w") as f: pass
-    with open(users_file, "r") as f: users = f.read().splitlines()
     
+    # قراءة المستخدمين
+    with open(users_file, "r") as f:
+        users = f.read().splitlines()
+    
+    # لو المستخدم جديد
     if user_id not in users:
-        with open(users_file, "a") as f: f.write(user_id + "\n")
+        with open(users_file, "a") as f:
+            f.write(user_id + "\n")
+        
+        # حساب العدد الكلي بعد الإضافة
+        total_members = len(users) + 1
+        
         if ADMIN_ID:
-            msg = (f"مستخدم جديد انضم للبوت\n"
-                   f"الاسم: {first_name}\n"
-                   f"اليوزر: @{username}\n"
-                   f"الأيدي: {user_id}")
-            try: bot.send_message(ADMIN_ID, msg)
-            except: pass
+            msg = (
+                f"تم دخول شخص جديد إلى البوت الخاص بك 👾\n"
+                f"-------------------------\n\n"
+                f"• معلومات العضو الجديد .\n\n"
+                f"• الاسم : {first_name}\n"
+                f"• معرف : {username}\n"
+                f"• الايدي : `{user_id}`\n"
+                f"-------------------------\n"
+                f"• عدد الأعضاء الكلي : {total_members}"
+            )
+            try:
+                bot.send_message(ADMIN_ID, msg)
+            except:
+                pass
         return True
     return False
 
