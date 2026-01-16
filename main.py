@@ -61,7 +61,7 @@ def keep_alive():
 # --- الإعدادات ---
 BOT_TOKEN = os.environ.get('TOKEN')
 ADMIN_ID = os.environ.get('ADMIN_ID')
-APP_URL = "https://live-ykzi.onrender.com"
+APP_URL = "https://kareem-live.onrender.com"
 
 MAINTENANCE_STATUS = {
     'youtube': False,
