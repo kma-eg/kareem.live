@@ -1,1 +1,287 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Video App</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <style>
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Cairo', sans-serif;
+            background: linear-gradient(135deg, #1e1e2f 0%, #0f0c29 100%);
+            background-attachment: fixed;
+            color: #fff;
+            min-height: 100dvh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow-y: auto;
+        }
 
+        .header-bar {
+            position: absolute;
+            top: 20px;
+            width: 90%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 100;
+        }
+
+        .gift-btn {
+            background: rgba(255, 215, 0, 0.2);
+            border: 1px solid #ffd700;
+            color: #ffd700;
+            padding: 8px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            animation: pulse 2s infinite;
+            font-size: 14px;
+        }
+        
+        .points-display { 
+            font-size: 14px; 
+            color: #eee; 
+            font-weight: bold; 
+            background: rgba(0,0,0,0.3);
+            padding: 5px 10px;
+            border-radius: 15px;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(255, 215, 0, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(255, 215, 0, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(255, 215, 0, 0); }
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 25px;
+            padding: 25px;
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+            margin-top: 60px;
+        }
+
+        .tabs {
+            display: flex;
+            background: rgba(0,0,0,0.3);
+            border-radius: 15px;
+            padding: 5px;
+            margin-bottom: 20px;
+        }
+        .tab {
+            flex: 1;
+            padding: 10px;
+            text-align: center;
+            cursor: pointer;
+            border-radius: 12px;
+            color: #aaa;
+            transition: 0.3s;
+            font-weight: bold;
+            font-size: 14px;
+        }
+        .tab.active {
+            background: linear-gradient(90deg, #ff00cc, #333399);
+            color: #fff;
+            box-shadow: 0 4px 15px rgba(255, 0, 204, 0.3);
+        }
+
+        h3 { margin: 0 0 15px 0; font-size: 18px; }
+
+        input {
+            width: 100%;
+            padding: 15px;
+            border-radius: 15px;
+            border: 2px solid rgba(255,255,255,0.1);
+            background: rgba(0,0,0,0.2);
+            color: white;
+            font-size: 16px;
+            font-family: 'Cairo', sans-serif;
+            outline: none;
+            box-sizing: border-box;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        input:focus { border-color: #ff00cc; }
+
+        button.main-btn {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 15px;
+            background: linear-gradient(90deg, #ff00cc, #333399);
+            color: white;
+            font-size: 18px;
+            font-weight: bold;
+            font-family: 'Cairo', sans-serif;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        button.main-btn:active { transform: scale(0.95); }
+
+        #status { margin-top: 15px; font-size: 14px; min-height: 20px; }
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+
+    <div class="header-bar">
+        <div class="points-display"><i class="fas fa-coins"></i> <span id="userPoints">...</span></div>
+        <div class="gift-btn" onclick="claimGift()">
+            <i class="fas fa-gift"></i> هدية
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="tabs">
+            <div class="tab active" onclick="switchTab('dl')">📥 تحميل</div>
+            <div class="tab" onclick="switchTab('sr')">🔍 بحث</div>
+        </div>
+
+        <div id="dl-section">
+            <h3>ضع الرابط هنا</h3>
+            <input type="text" id="linkInput" placeholder="رابط فيديو (يوتيوب، فيسبوك..)">
+            <button onclick="sendData('download')" class="main-btn">بدء التحميل 🚀</button>
+        </div>
+
+        <div id="sr-section" class="hidden">
+            <h3>بحث يوتيوب</h3>
+            <input type="text" id="searchInput" placeholder="اكتب اسم الفيديو...">
+            <button onclick="sendData('search')" class="main-btn" style="background: linear-gradient(90deg, #333399, #ff00cc);">بحث الآن 🔎</button>
+        </div>
+
+        <div id="status"></div>
+    </div>
+
+    <script>
+        const tg = window.Telegram.WebApp;
+        tg.expand();
+
+        window.onload = function() {
+            const userId = tg.initDataUnsafe.user ? tg.initDataUnsafe.user.id : null;
+            if(userId) {
+                fetch('/submit', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ type: 'get_points', user_id: userId })
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if(data.points !== undefined) {
+                        document.getElementById('userPoints').innerText = data.points;
+                    }
+                });
+            }
+        };
+
+        function claimGift() {
+            const statusDiv = document.getElementById("status");
+            const userId = tg.initDataUnsafe.user ? tg.initDataUnsafe.user.id : null;
+            
+            if(!userId) {
+                statusDiv.innerText = "❌ لا يمكن التعرف على المستخدم";
+                return;
+            }
+
+            statusDiv.innerText = "🎁 جاري استلام الهدية...";
+            
+            fetch('/submit', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ type: 'gift', user_id: userId })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if(data.status === 'ok') {
+                    statusDiv.innerText = "🎉 " + data.msg;
+                    statusDiv.style.color = "#ffd700";
+                    document.getElementById('userPoints').innerText = data.new_points;
+                    if(tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
+                } else {
+                    statusDiv.innerText = "⚠️ " + data.msg;
+                    statusDiv.style.color = "#ff9900";
+                    if(tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('warning');
+                }
+            });
+        }
+
+        function switchTab(mode) {
+            const dl = document.getElementById('dl-section');
+            const sr = document.getElementById('sr-section');
+            const tabs = document.querySelectorAll('.tab');
+
+            if (mode === 'dl') {
+                dl.classList.remove('hidden');
+                sr.classList.add('hidden');
+                tabs[0].classList.add('active');
+                tabs[1].classList.remove('active');
+            } else {
+                dl.classList.add('hidden');
+                sr.classList.remove('hidden');
+                tabs[0].classList.remove('active');
+                tabs[1].classList.add('active');
+            }
+        }
+
+        function sendData(reqType) {
+            const statusDiv = document.getElementById("status");
+            const userId = tg.initDataUnsafe.user ? tg.initDataUnsafe.user.id : null;
+            let value = "";
+
+            if (reqType === 'download') {
+                value = document.getElementById("linkInput").value;
+                if (!value) { statusDiv.innerText = "⚠️ ضع الرابط أولاً"; return; }
+            } else {
+                value = document.getElementById("searchInput").value;
+                if (!value) { statusDiv.innerText = "⚠️ اكتب كلمة للبحث"; return; }
+            }
+
+            statusDiv.innerText = "⏳ جاري المعالجة...";
+            statusDiv.style.color = "#fff";
+            
+            fetch('/submit', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    type: reqType,
+                    text: value,
+                    user_id: userId
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if(data.status === "ok") {
+                    statusDiv.innerText = "✅ تم الإرسال! راجع البوت.";
+                    statusDiv.style.color = "#00e676";
+                    if(tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
+                    setTimeout(() => tg.close(), 1500);
+                } else {
+                    statusDiv.innerText = "❌ حدث خطأ.";
+                    statusDiv.style.color = "#ff4d4d";
+                }
+            })
+            .catch(err => { 
+                statusDiv.innerText = "❌ خطأ في الاتصال"; 
+                statusDiv.style.color = "#ff4d4d";
+            });
+        }
+    </script>
+</body>
+</html>
