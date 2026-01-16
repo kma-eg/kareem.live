@@ -298,7 +298,7 @@ def send_welcome(message):
     
     welcome_text = (
         f"أهلاً بك يا {message.from_user.first_name} 👋\n\n"
-        f"💰 نقاطك الحالية: {data[uid]['points']}\n\n"
+        
         "أنا بوت التحميل الشامل 🤖\n"
         "حمل من يوتيوب، تيك توك، فيسبوك، إنستجرام\n"
         "اضغط بالأسفل لفتح التطبيق 👇"
